@@ -6,11 +6,11 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Tibia Explorer API",
+        title="Training Cards API",
         default_version="v1",
-        description="Swagger UI to the Tibia Explorer API",
+        description="Swagger UI to the Training Cards API",
         terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="contact@tibia_explorer.com.br"),
+        contact=openapi.Contact(email="contact@training_cards.com.br"),
         license=openapi.License(name="BSD License"),
     ),
     public=True,
