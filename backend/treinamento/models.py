@@ -50,6 +50,8 @@ class Ficha(models.Model):
         auto_now_add=True,
         editable=False 
     )
+
+    atual = models.BooleanField(default=False)
     
     class Meta:
         db_table = "ficha"
@@ -88,7 +90,7 @@ class Dia (models.Model):
 
 class Exercicio (models.Model):
     id = models.IntegerField(primary_key=True)
-    descricao = models.CharField(max_length=255, unique=True)
+    descricao = models.CharField(max_length=255)
     is_composto = models.BooleanField(default=False)
     id_exercicio_composto = models.ForeignKey(
         'self',
@@ -99,6 +101,7 @@ class Exercicio (models.Model):
     )
 
     class Meta:
+        unique_together = (("descricao", "is_composto"),) 
         db_table = "exercicio"
 
     def __str__(self):
@@ -188,7 +191,10 @@ class Treinamento_Exercicio (models.Model):
         related_name="TE_exercicio",
         on_delete= models.PROTECT,
         db_column="id_exercicio"
-    )   
+    )
+    qtd_rep = models.IntegerField(default=12)
+    qtd_set = models.IntegerField(default=12)
+    intervalo = models.CharField(max_length=255, default="40 sec")   
  
     class Meta:
         db_table = "treinamento_exercicio"            
@@ -203,7 +209,7 @@ class Treinamento_Exercicio_Tecnica (models.Model):
         db_column="id_treinamento_exercicio"
     )
     id_tecnica = models.ForeignKey(
-        Exercicio,
+        Tecnica,
         related_name="TET_tecnica",
         on_delete= models.PROTECT,
         db_column="id_tecnica"
