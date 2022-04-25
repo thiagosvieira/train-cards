@@ -6,7 +6,6 @@ from authentication.models import UserAccount
 # Create your models here.
 
 class  Instrutor(models.Model):
-    id = models.IntegerField(primary_key=True)
     nome = models.CharField(unique=True, max_length=255)
 
     class Meta:
@@ -17,7 +16,6 @@ class  Instrutor(models.Model):
         
     
 class Objetivo(models.Model):
-    id = models.IntegerField(primary_key=True)
     descricao = models.CharField(unique=True, max_length=255)
 
     class Meta:
@@ -26,49 +24,7 @@ class Objetivo(models.Model):
     def __str__(self):
         return self.descricao    
 
-class Ficha(models.Model):
-    id = models.IntegerField(primary_key=True)
-    id_objetivo = models.ForeignKey(
-        Objetivo,
-        related_name="id_objetivo",
-        on_delete= models.PROTECT,
-        db_column="id_objetivo"
-    )
-    id_instrutor = models.ForeignKey(
-        Instrutor,
-        related_name="id_instrutor",
-        on_delete= models.PROTECT,
-        db_column="id_instrutor"
-    )
-    id_user = models.ForeignKey(
-        UserAccount,
-        related_name="id_user",
-        on_delete= models.PROTECT,
-        db_column="id_user"
-    )    
-    data_criacao = models.DateTimeField(
-        auto_now_add=True,
-        editable=False 
-    )
-
-    atual = models.BooleanField(default=False)
-    
-    class Meta:
-        db_table = "ficha"
-
-     
-class Treinamento (models.Model):
-    id = models.IntegerField(primary_key=True)
-    descricao = models.CharField(max_length=255)
-
-    class Meta:
-        db_table = "treinamento"
-
-    def __str__(self):
-        return self.descricao
-
 class Turno (models.Model):
-    id = models.IntegerField(primary_key=True)
     descricao = models.CharField(max_length=255, unique=True)
     horario = models.IntegerField()
 
@@ -79,7 +35,6 @@ class Turno (models.Model):
         return self.descricao        
 
 class Dia (models.Model):
-    id = models.IntegerField(primary_key=True)
     descricao = models.CharField(max_length=255, unique=True)
 
     class Meta:
@@ -88,13 +43,20 @@ class Dia (models.Model):
     def __str__(self):
         return self.descricao        
 
+class Tecnica (models.Model):
+    descricao = models.CharField(max_length=255, unique=True)
+
+    class Meta:
+        db_table = "tecnica"
+
+    def __str__(self):
+        return self.descricao     
 class Exercicio (models.Model):
-    id = models.IntegerField(primary_key=True)
     descricao = models.CharField(max_length=255)
     is_composto = models.BooleanField(default=False)
     id_exercicio_composto = models.ForeignKey(
         'self',
-        related_name="E_exercicio_composto",
+        related_name="exercicios",
         on_delete= models.PROTECT,
         db_column="id_exercicio_composto",
         null=True
@@ -106,114 +68,67 @@ class Exercicio (models.Model):
 
     def __str__(self):
         return self.descricao        
+      
 
-class Tecnica (models.Model):
-    id = models.IntegerField(primary_key=True)
-    descricao = models.CharField(max_length=255, unique=True)
-
+class Treinamento (models.Model):
+    descricao = models.CharField(max_length=255)
+    turnos = models.ManyToManyField(Turno)
+    dias = models.ManyToManyField(Dia)
+    
     class Meta:
-        db_table = "tecnica"
+        db_table = "treinamento"
 
     def __str__(self):
-        return self.descricao        
-
-class Ficha_Treinamento (models.Model):
-    id = models.IntegerField(primary_key=True)
-    
-    id_ficha = models.ForeignKey(
-        Ficha,
-        related_name="FT_ficha",
-        on_delete= models.CASCADE,
-        db_column="id_ficha"
-    )
-    id_treinamento = models.ForeignKey(
-        Treinamento,
-        related_name="FT_treinamento",
-        on_delete= models.PROTECT,
-        db_column="id_treinamento"
-    )    
-
-    class Meta:
-        unique_together = (("id_ficha", "id_treinamento"),)  
-        db_table = "ficha_treinamento"      
-
-class Treinamento_Turno (models.Model):
-    id = models.IntegerField(primary_key=True)
-    
-    id_treinamento = models.ForeignKey(
-        Treinamento,
-        related_name="TT_treinamento",
-        on_delete= models.CASCADE,
-        db_column="id_treinamento"
-    )
-    id_turno = models.ForeignKey(
-        Turno,
-        related_name="TT_turno",
-        on_delete= models.PROTECT,
-        db_column="id_turno"
-    )    
-
-    class Meta:
-        unique_together = (("id_treinamento", "id_turno"),)  
-        db_table = "treinamento_turno"           
-
-class Treinamento_Dia (models.Model):
-    id = models.IntegerField(primary_key=True)
-    
-    id_treinamento = models.ForeignKey(
-        Treinamento,
-        related_name="TD_treinamento",
-        on_delete= models.CASCADE,
-        db_column="id_treinamento"
-    )
-    id_dia = models.ForeignKey(
-        Dia,
-        related_name="TD_dia",
-        on_delete= models.PROTECT,
-        db_column="id_dia"
-    )    
-
-    class Meta:
-        unique_together = (("id_treinamento", "id_dia"),)  
-        db_table = "treinamento_dia"           
+        return self.descricao
 
 class Treinamento_Exercicio (models.Model):
-    id = models.IntegerField(primary_key=True)
-    
-    id_treinamento = models.ForeignKey(
+    treinamento = models.ForeignKey(
         Treinamento,
-        related_name="TE_treinamento",
+        related_name="exercicios",
         on_delete= models.CASCADE,
         db_column="id_treinamento"
     )
-    id_exercicio = models.ForeignKey(
+    exercicio = models.ForeignKey(
         Exercicio,
-        related_name="TE_exercicio",
+        related_name="treinamento_exercicio",
         on_delete= models.PROTECT,
         db_column="id_exercicio"
     )
     qtd_rep = models.IntegerField(default=12)
     qtd_set = models.IntegerField(default=12)
     intervalo = models.CharField(max_length=255, default="40 sec")   
- 
+    tecnicas = models.ManyToManyField(Tecnica)
     class Meta:
         db_table = "treinamento_exercicio"            
 
-class Treinamento_Exercicio_Tecnica (models.Model):
-    id = models.IntegerField(primary_key=True)
-    
-    id_treinamento_exercicio = models.ForeignKey(
-        Treinamento,
-        related_name="TET_treinamento_exercicio",
-        on_delete= models.CASCADE,
-        db_column="id_treinamento_exercicio"
-    )
-    id_tecnica = models.ForeignKey(
-        Tecnica,
-        related_name="TET_tecnica",
-        on_delete= models.PROTECT,
-        db_column="id_tecnica"
-    )   
 
+class Ficha(models.Model):
+    id_objetivo = models.ForeignKey(
+        Objetivo,
+        related_name="fichas",
+        on_delete= models.PROTECT,
+        db_column="id_objetivo"
+    )
+    id_instrutor = models.ForeignKey(
+        Instrutor,
+        related_name="fichas",
+        on_delete= models.PROTECT,
+        db_column="id_instrutor"
+    )
+    id_user = models.ForeignKey(
+        UserAccount,
+        related_name="fichas",
+        on_delete= models.PROTECT,
+        db_column="id_user"
+    )    
+    data_criacao = models.DateTimeField(
+        auto_now_add=True,
+        editable=False 
+    )
+
+    atual = models.BooleanField(default=False)
+
+    treinamentos = models.ManyToManyField(Treinamento)
+    
     class Meta:
-        db_table = "treinamento_exercicio_tecnica"        
+        db_table = "ficha"
