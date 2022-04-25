@@ -54,7 +54,7 @@ class Tecnica (models.Model):
 class Exercicio (models.Model):
     descricao = models.CharField(max_length=255)
     is_composto = models.BooleanField(default=False)
-    id_exercicio_composto = models.ForeignKey(
+    exercicio_composto = models.ForeignKey(
         'self',
         related_name="exercicios",
         on_delete= models.PROTECT,
@@ -103,19 +103,19 @@ class Treinamento_Exercicio (models.Model):
 
 
 class Ficha(models.Model):
-    id_objetivo = models.ForeignKey(
+    objetivo = models.ForeignKey(
         Objetivo,
         related_name="fichas",
         on_delete= models.PROTECT,
         db_column="id_objetivo"
     )
-    id_instrutor = models.ForeignKey(
+    instrutor = models.ForeignKey(
         Instrutor,
         related_name="fichas",
         on_delete= models.PROTECT,
         db_column="id_instrutor"
     )
-    id_user = models.ForeignKey(
+    user = models.ForeignKey(
         UserAccount,
         related_name="fichas",
         on_delete= models.PROTECT,

@@ -31,17 +31,6 @@ class ObjetivoSerializer(serializers.ModelSerializer):
         read_only = True        
 
 
-class FichaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Ficha
-        fields = "__all__" 
-        read_only = True
-class FichaDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Ficha
-        fields = "__all__"
-        read_only = True
-        depth = 3 #Exbi o detalhe dos objetos do json que são foreign key de acordo com a profundidade informada
 
 class Treinamento_ExercicioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -85,3 +74,18 @@ class ExercicioDetailSerializer(serializers.ModelSerializer):
         
         depth = 2
 
+
+class FichaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ficha
+        fields = "__all__" 
+        read_only = True
+class FichaDetailSerializer(serializers.ModelSerializer):
+    treinamentos =TreinamentoDetailSerializer(many=True)
+    class Meta:
+        model = Ficha
+        fields = ['id', 'objetivo', 'instrutor', 'user','data_criacao', 'atual','treinamentos']
+        read_only = True
+        depth = 3 #Exbi o detalhe dos objetos do json que são foreign key de acordo com a profundidade informada
+    
+    
