@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+migrations/
 *.py[cod]
 *$py.class
 
@@ -127,3 +128,20 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+### react ###
+.DS_*
+*.log
+logs
+**/*.backup.*
+**/*.back.*
+
+node_modules
+bower_components
+
+*.sublime*
+
+psd
+thumb
+sketch
